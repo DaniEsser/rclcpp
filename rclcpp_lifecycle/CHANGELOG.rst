@@ -3,6 +3,41 @@ Changelog for package rclcpp_lifecycle
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 
+28.1.14 (2025-11-18)
+--------------------
+* Fix REP url locations (`#2987 <https://github.com/ros2/rclcpp/issues/2987>`_) (`#2990 <https://github.com/ros2/rclcpp/issues/2990>`_)
+* Add get_parameter_or overload returning value or alternative (`#2973 <https://github.com/ros2/rclcpp/issues/2973>`_) (`#2977 <https://github.com/ros2/rclcpp/issues/2977>`_)
+* Contributors: mergify[bot]
+
+28.1.13 (2025-10-21)
+--------------------
+
+28.1.12 (2025-09-11)
+--------------------
+* Clearer warning message, the old one lacked information and was perhaps misleading (`#2927 <https://github.com/ros2/rclcpp/issues/2927>`_) (`#2932 <https://github.com/ros2/rclcpp/issues/2932>`_)
+* Contributors: mergify[bot]
+
+28.1.11 (2025-08-06)
+--------------------
+
+28.1.10 (2025-06-23)
+--------------------
+* Added missing chrono includes (`#2854 <https://github.com/ros2/rclcpp/issues/2854>`_) (`#2856 <https://github.com/ros2/rclcpp/issues/2856>`_)
+* Contributors: mergify[bot]
+
+28.1.9 (2025-04-23)
+-------------------
+
+28.1.8 (2025-04-02)
+-------------------
+* should pull valid transition before trying to change the state. (`#2774 <https://github.com/ros2/rclcpp/issues/2774>`_) (`#2784 <https://github.com/ros2/rclcpp/issues/2784>`_)
+  (cherry picked from commit 7b6ee8a2e7a13d73f9f69368970390a9e0930448)
+  Co-authored-by: Tomoya Fujita <Tomoya.Fujita@sony.com>
+* Contributors: mergify[bot]
+
+28.1.7 (2025-03-26)
+-------------------
+
 28.1.6 (2024-12-18)
 -------------------
 

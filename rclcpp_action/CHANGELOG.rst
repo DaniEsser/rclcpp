@@ -3,6 +3,51 @@ Changelog for package rclcpp_action
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 
+28.1.14 (2025-11-18)
+--------------------
+* Fix REP url locations (`#2987 <https://github.com/ros2/rclcpp/issues/2987>`_) (`#2990 <https://github.com/ros2/rclcpp/issues/2990>`_)
+* Contributors: mergify[bot]
+
+28.1.13 (2025-10-21)
+--------------------
+* it misses the iterator second to lock the weakptr. (`#2958 <https://github.com/ros2/rclcpp/issues/2958>`_) (`#2960 <https://github.com/ros2/rclcpp/issues/2960>`_)
+* Contributors: mergify[bot]
+
+28.1.12 (2025-09-11)
+--------------------
+
+28.1.11 (2025-08-06)
+--------------------
+
+28.1.10 (2025-06-23)
+--------------------
+* Replace std::default_random_engine with std::mt19937 (humble) (`#2847 <https://github.com/ros2/rclcpp/issues/2847>`_) (`#2867 <https://github.com/ros2/rclcpp/issues/2867>`_)
+* Added missing chrono includes (`#2854 <https://github.com/ros2/rclcpp/issues/2854>`_) (`#2856 <https://github.com/ros2/rclcpp/issues/2856>`_)
+* Contributors: mergify[bot]
+
+28.1.9 (2025-04-23)
+-------------------
+* fix(rclcpp_action): Fix sleep of expire thread in case of canceled timer (`#2800 <https://github.com/ros2/rclcpp/issues/2800>`_)
+  This fixes a bug, that the expire action thread would not sleep as,
+  the sleep duration was not computed correctly.
+  Co-authored-by: Janosch Machowinski <J.Machowinski@cellumation.com>
+* Contributors: Janosch Machowinski
+
+28.1.8 (2025-04-02)
+-------------------
+* Harden rclcpp_action::convert(). (`#2786 <https://github.com/ros2/rclcpp/issues/2786>`_) (`#2789 <https://github.com/ros2/rclcpp/issues/2789>`_)
+  * Harden rclcpp_action::convert().
+  * update docstring.
+  ---------
+  (cherry picked from commit ce86ef7e621d96ce50d6ec1b49e9e1cd4f0a828b)
+  Co-authored-by: Tomoya Fujita <Tomoya.Fujita@sony.com>
+* Contributors: mergify[bot]
+
+28.1.7 (2025-03-26)
+-------------------
+* fix: Fixed expiring of goals if events executor is used (`#2674 <https://github.com/ros2/rclcpp/issues/2674>`_)
+* Contributors: Janosch Machowinski
+
 28.1.6 (2024-12-18)
 -------------------
 

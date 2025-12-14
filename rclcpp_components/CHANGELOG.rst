@@ -2,6 +2,36 @@
 Changelog for package rclcpp_components
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+28.1.14 (2025-11-18)
+--------------------
+* Fix REP url locations (`#2987 <https://github.com/ros2/rclcpp/issues/2987>`_) (`#2990 <https://github.com/ros2/rclcpp/issues/2990>`_)
+* Contributors: mergify[bot]
+
+28.1.13 (2025-10-21)
+--------------------
+
+28.1.12 (2025-09-11)
+--------------------
+
+28.1.11 (2025-08-06)
+--------------------
+
+28.1.10 (2025-06-23)
+--------------------
+* Added missing chrono includes (`#2854 <https://github.com/ros2/rclcpp/issues/2854>`_) (`#2856 <https://github.com/ros2/rclcpp/issues/2856>`_)
+* Contributors: mergify[bot]
+
+28.1.9 (2025-04-23)
+-------------------
+
+28.1.8 (2025-04-02)
+-------------------
+
+28.1.7 (2025-03-26)
+-------------------
+* add NO_UNDEFINED_SYMBOLS to rclcpp_components_register_node cmake macro (`#2746 <https://github.com/ros2/rclcpp/issues/2746>`_)
+* Contributors: Jonas Otto
+
 28.1.6 (2024-12-18)
 -------------------
 
