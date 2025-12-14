@@ -164,6 +164,7 @@ bool StaticSingleThreadedExecutor::execute_ready_executables(
   while (auto subscription = wait_result.next_ready_subscription()) {
     auto entity_iter = collection.subscriptions.find(subscription->get_subscription_handle().get());
     if (entity_iter != collection.subscriptions.end()) {
+      time_delay_backend_.register_callback_start();
       execute_subscription(subscription);
       any_ready_executable = true;
       if (spin_once) {return any_ready_executable;}
@@ -180,12 +181,13 @@ bool StaticSingleThreadedExecutor::execute_ready_executables(
     auto entity_iter = collection.timers.find(timer->get_timer_handle().get());
     if (entity_iter != collection.timers.end()) {
       wait_result.clear_timer_with_index(current_timer_index);
+      time_delay_backend_.register_callback_start();
       auto data = timer->call();
       if (!data) {
         // someone canceled the timer between is_ready and call
         continue;
       }
-
+      time_delay_backend_.register_callback_start();
       execute_timer(std::move(timer), data);
       any_ready_executable = true;
       if (spin_once) {return any_ready_executable;}
@@ -195,6 +197,7 @@ bool StaticSingleThreadedExecutor::execute_ready_executables(
   while (auto client = wait_result.next_ready_client()) {
     auto entity_iter = collection.clients.find(client->get_client_handle().get());
     if (entity_iter != collection.clients.end()) {
+      time_delay_backend_.register_callback_start();
       execute_client(client);
       any_ready_executable = true;
       if (spin_once) {return any_ready_executable;}
@@ -204,6 +207,7 @@ bool StaticSingleThreadedExecutor::execute_ready_executables(
   while (auto service = wait_result.next_ready_service()) {
     auto entity_iter = collection.services.find(service->get_service_handle().get());
     if (entity_iter != collection.services.end()) {
+      time_delay_backend_.register_callback_start();
       execute_service(service);
       any_ready_executable = true;
       if (spin_once) {return any_ready_executable;}
@@ -214,6 +218,7 @@ bool StaticSingleThreadedExecutor::execute_ready_executables(
     auto entity_iter = collection.waitables.find(waitable.get());
     if (entity_iter != collection.waitables.end()) {
       const auto data = waitable->take_data();
+      time_delay_backend_.register_callback_start();
       waitable->execute(data);
       any_ready_executable = true;
       if (spin_once) {return any_ready_executable;}

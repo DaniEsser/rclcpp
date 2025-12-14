@@ -49,6 +49,10 @@
 
 #include "tracetools/tracetools.h"
 
+#include "rslcpp_time_delay_backend/callback_backend.hpp"
+#include "rslcpp_time_delay_backend/delay_backend.hpp"
+#include "rslcpp_exceptions/exceptions.hpp"
+
 namespace rclcpp
 {
 
@@ -242,7 +246,10 @@ public:
   publish(std::unique_ptr<T, ROSMessageTypeDeleter> msg)
   {
     if (!intra_process_is_enabled_) {
+      rslcpp::exceptions::IntraProcessPublishDisabled(this->get_topic_name()).conditional_throw();
+callback_backend_.add_delayed_callable(rslcpp::time_delay::DelayedCallable(delay_backend_.get_delay(this->get_topic_name()), [this, msg = std::move(msg)]() mutable {
       this->do_inter_process_publish(*msg);
+}));
       return;
     }
     // If an interprocess subscription exist, then the unique_ptr is promoted
@@ -255,6 +262,7 @@ public:
     // When durability is set to TransientLocal (i.e. there is a buffer),
     // inter process publish should always take place to ensure
     // late joiners receive past data.
+callback_backend_.add_delayed_callable(rslcpp::time_delay::DelayedCallable(delay_backend_.get_delay(this->get_topic_name()), [this, msg = std::move(msg)]() mutable {
     bool inter_process_publish_needed =
       get_subscription_count() > get_intra_process_subscription_count() || buffer_;
 
@@ -275,7 +283,8 @@ public:
       }
     }
   }
-
+));
+  }
   /// Publish a message on the topic.
   /**
    * This signature is enabled if the object being published is
@@ -297,14 +306,17 @@ public:
   {
     // Avoid allocating when not using intra process.
     if (!intra_process_is_enabled_) {
+      rslcpp::exceptions::IntraProcessPublishDisabled(this->get_topic_name()).conditional_throw();
+callback_backend_.add_delayed_callable(rslcpp::time_delay::DelayedCallable(delay_backend_.get_delay(this->get_topic_name()), [this, msg = std::move(msg)]() mutable {
       this->do_inter_process_publish(msg);
+}));
       return;
     }
     // Otherwise we have to allocate memory in a unique_ptr and pass it along.
     // As the message is not const, a copy should be made.
     // A shared_ptr<const MessageT> could also be constructed here.
     auto unique_msg = this->duplicate_ros_message_as_unique_ptr(msg);
-    this->publish(std::move(unique_msg));
+    this->publish(std::move(unique_msg)); // Already delayed in the called function
   }
 
   /// Publish a message on the topic.
@@ -326,16 +338,20 @@ public:
   publish(std::unique_ptr<T, PublishedTypeDeleter> msg)
   {
     if (!intra_process_is_enabled_) {
+      rslcpp::exceptions::IntraProcessPublishDisabled(this->get_topic_name()).conditional_throw();
       // In this case we're not using intra process.
       auto ros_msg_ptr = std::make_unique<ROSMessageType>();
       rclcpp::TypeAdapter<MessageT>::convert_to_ros_message(*msg, *ros_msg_ptr);
-      this->do_inter_process_publish(*ros_msg_ptr);
+callback_backend_.add_delayed_callable(rslcpp::time_delay::DelayedCallable(delay_backend_.get_delay(this->get_topic_name()), [this, msg_ = *ros_msg_ptr]() mutable {
+      this->do_inter_process_publish(msg_);
+}));
       return;
     }
 
     // When durability is set to TransientLocal (i.e. there is a buffer),
     // inter process publish should always take place to ensure
     // late joiners receive past data.
+callback_backend_.add_delayed_callable(rslcpp::time_delay::DelayedCallable(delay_backend_.get_delay(this->get_topic_name()), [this, msg = std::move(msg)]() mutable {
     bool inter_process_publish_needed =
       get_subscription_count() > get_intra_process_subscription_count() || buffer_;
 
@@ -355,6 +371,7 @@ public:
       }
       this->do_intra_process_publish(std::move(msg));
     }
+}));
   }
 
   /// Publish a message on the topic.
@@ -376,10 +393,13 @@ public:
   publish(const T & msg)
   {
     if (!intra_process_is_enabled_) {
+      rslcpp::exceptions::IntraProcessPublishDisabled(this->get_topic_name()).conditional_throw();
       // Convert to the ROS message equivalent and publish it.
       auto ros_msg_ptr = std::make_unique<ROSMessageType>();
       rclcpp::TypeAdapter<MessageT>::convert_to_ros_message(msg, *ros_msg_ptr);
-      this->do_inter_process_publish(*ros_msg_ptr);
+callback_backend_.add_delayed_callable(rslcpp::time_delay::DelayedCallable(delay_backend_.get_delay(this->get_topic_name()), [this, msg_ = *ros_msg_ptr]() mutable {
+      this->do_inter_process_publish(msg_);
+}));
       return;
     }
 
@@ -387,19 +407,23 @@ public:
     // As the message is not const, a copy should be made.
     // A shared_ptr<const MessageT> could also be constructed here.
     auto unique_msg = this->duplicate_type_adapt_message_as_unique_ptr(msg);
-    this->publish(std::move(unique_msg));
+    this->publish(std::move(unique_msg)); // Already delayed in the called function
   }
 
   void
   publish(const rcl_serialized_message_t & serialized_msg)
   {
+  callback_backend_.add_delayed_callable(rslcpp::time_delay::DelayedCallable(delay_backend_.get_delay(this->get_topic_name()), [this, serialized_msg]() mutable {
     return this->do_serialized_publish(&serialized_msg);
+  }));
   }
 
   void
   publish(const SerializedMessage & serialized_msg)
   {
-    return this->do_serialized_publish(&serialized_msg.get_rcl_serialized_message());
+  callback_backend_.add_delayed_callable(rslcpp::time_delay::DelayedCallable(delay_backend_.get_delay(this->get_topic_name()), [this, serialized_msg]() mutable {
+      return this->do_serialized_publish(&serialized_msg.get_rcl_serialized_message());
+  }));
   }
 
   /// Publish an instance of a LoanedMessage.
@@ -413,6 +437,7 @@ public:
   void
   publish(rclcpp::LoanedMessage<ROSMessageType, AllocatorT> && loaned_msg)
   {
+    rslcpp::exceptions::UnsupportedTimeDelayFeature(std::string("Publishing a loaned message with time delay is not supported by rslcpp. Publisher: ") + this->get_topic_name());
     if (!loaned_msg.is_valid()) {
       throw std::runtime_error("loaned message is not valid");
     }
@@ -616,6 +641,9 @@ protected:
   PublishedTypeDeleter published_type_deleter_;
   ROSMessageTypeAllocator ros_message_type_allocator_;
   ROSMessageTypeDeleter ros_message_type_deleter_;
+
+  rslcpp::time_delay::CallbackBackend & callback_backend_ = rslcpp::time_delay::CallbackBackend::getInstance();
+  rslcpp::time_delay::DelayBackend & delay_backend_ = rslcpp::time_delay::DelayBackend::getInstance();
 
   BufferSharedPtr buffer_{nullptr};
 };

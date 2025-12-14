@@ -23,6 +23,8 @@ find_package(rosidl_typesupport_c REQUIRED)
 find_package(rosidl_typesupport_cpp REQUIRED)
 find_package(statistics_msgs REQUIRED)
 find_package(tracetools REQUIRED)
+find_package(rslcpp_time_delay_backend REQUIRED)
+find_package(rslcpp_exceptions REQUIRED)
 
 # TODO(wjwwood): remove this when gtest can build on its own, when using target_compile_features()
 # Default to C++17
@@ -239,6 +241,8 @@ target_link_libraries(${PROJECT_NAME} PUBLIC
   ${statistics_msgs_TARGETS}
   tracetools::tracetools
   ${CMAKE_THREAD_LIBS_INIT}
+  rslcpp_time_delay_backend::rslcpp_time_delay_backend
+  rslcpp_exceptions::rslcpp_exceptions
 )
 
 target_link_libraries(${PROJECT_NAME} PRIVATE
@@ -281,6 +285,8 @@ ament_export_dependencies(
   rosidl_typesupport_cpp
   statistics_msgs
   tracetools
+  rslcpp_time_delay_backend
+  rslcpp_exceptions
 )
 
 if(BUILD_TESTING)

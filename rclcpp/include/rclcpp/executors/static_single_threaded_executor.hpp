@@ -23,6 +23,8 @@
 #include "rclcpp/executors/executor_entities_collection.hpp"
 #include "rclcpp/executors/single_threaded_executor.hpp"
 
+#include "rslcpp_time_delay_backend/delay_backend.hpp"
+
 namespace rclcpp
 {
 namespace executors
@@ -130,6 +132,7 @@ protected:
 
 private:
   RCLCPP_DISABLE_COPY(StaticSingleThreadedExecutor)
+  rslcpp::time_delay::DelayBackend & time_delay_backend_ = rslcpp::time_delay::DelayBackend::getInstance();
 };
 
 }  // namespace executors

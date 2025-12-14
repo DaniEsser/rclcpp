@@ -106,20 +106,23 @@ Node::create_subscription(
 }
 
 template<typename DurationRepT, typename DurationT, typename CallbackT>
-typename rclcpp::WallTimer<CallbackT>::SharedPtr
+typename rclcpp::GenericTimer<CallbackT>::SharedPtr
 Node::create_wall_timer(
   std::chrono::duration<DurationRepT, DurationT> period,
   CallbackT callback,
   rclcpp::CallbackGroup::SharedPtr group,
-  bool autostart)
+  bool)
 {
-  return rclcpp::create_wall_timer(
-    period,
-    std::move(callback),
-    group,
-    this->node_base_.get(),
-    this->node_timers_.get(),
-    autostart);
+  // Do not create wall timers in rslcpp
+  return this->create_timer(period, std::move(callback), group);
+
+  // return rclcpp::create_wall_timer(
+  //   period,
+  //   std::move(callback),
+  //   group,
+  //   this->node_base_.get(),
+  //   this->node_timers_.get(),
+  //   autostart);
 }
 
 template<typename DurationRepT, typename DurationT, typename CallbackT>
