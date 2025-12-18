@@ -184,4 +184,7 @@
 #include "rclcpp/waitable.hpp"
 #include "rclcpp/wait_set.hpp"
 
+
+#define RSLCPP__CUSTOM__RCLCPP
+
 #endif  // RCLCPP__RCLCPP_HPP_
