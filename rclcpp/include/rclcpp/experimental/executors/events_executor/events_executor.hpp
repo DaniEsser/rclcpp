@@ -209,6 +209,13 @@ public:
   std::vector<rclcpp::CallbackGroup::WeakPtr>
   get_automatically_added_callback_groups_from_nodes() override;
 
+  /// Add a functio to get the time until the next event.
+  RCLCPP_PUBLIC
+  std::chrono::nanoseconds get_time_until_next_timer() const
+  {
+    return timers_manager_->get_head_timeout().value_or(std::chrono::nanoseconds::max());
+  }
+
 protected:
   /// Internal implementation of spin_once
   RCLCPP_PUBLIC
