@@ -292,6 +292,7 @@ EventsExecutor::execute_event(const ExecutorEvent & event)
         }
         if (client) {
           for (size_t i = 0; i < event.num_events; i++) {
+            time_delay_backend_.register_callback_start();
             execute_client(client);
           }
         }
@@ -309,6 +310,7 @@ EventsExecutor::execute_event(const ExecutorEvent & event)
         }
         if (subscription) {
           for (size_t i = 0; i < event.num_events; i++) {
+            time_delay_backend_.register_callback_start();
             execute_subscription(subscription);
           }
         }
@@ -325,6 +327,7 @@ EventsExecutor::execute_event(const ExecutorEvent & event)
         }
         if (service) {
           for (size_t i = 0; i < event.num_events; i++) {
+            time_delay_backend_.register_callback_start();
             execute_service(service);
           }
         }
@@ -349,6 +352,7 @@ EventsExecutor::execute_event(const ExecutorEvent & event)
         if (waitable) {
           for (size_t i = 0; i < event.num_events; i++) {
             const auto data = waitable->take_data_by_entity_id(event.waitable_data);
+            time_delay_backend_.register_callback_start();
             waitable->execute(data);
           }
         }

@@ -153,6 +153,7 @@ bool TimersManager::execute_head_timer()
       // someone canceled the timer between is_ready and call
       return false;
     }
+    time_delay_backend_.register_callback_start();
     head_timer->execute_callback(data);
     timers_heap.heapify_root();
     weak_timers_heap_.store(timers_heap);
@@ -171,6 +172,7 @@ void TimersManager::execute_ready_timer(
     ready_timer = weak_timers_heap_.get_timer(timer_id);
   }
   if (ready_timer) {
+    time_delay_backend_.register_callback_start();
     ready_timer->execute_callback(data);
   }
 }

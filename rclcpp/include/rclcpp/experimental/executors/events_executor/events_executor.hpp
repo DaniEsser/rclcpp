@@ -29,6 +29,9 @@
 #include "rclcpp/experimental/timers_manager.hpp"
 #include "rclcpp/node.hpp"
 
+#include "rslcpp_time_delay_backend/delay_backend.hpp"
+
+
 namespace rclcpp
 {
 namespace experimental
@@ -292,6 +295,9 @@ private:
 
   /// Timers manager used to track and/or execute associated timers
   std::shared_ptr<rclcpp::experimental::TimersManager> timers_manager_;
+
+  // Time Delay backend for rslcpp
+  rslcpp::time_delay::DelayBackend & time_delay_backend_ = rslcpp::time_delay::DelayBackend::getInstance();
 };
 
 }  // namespace executors
